@@ -1,0 +1,87 @@
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/json");
+
+include "config.php";
+// $conn = new mysqli("localhost", "root", "", "dataionic");
+
+$data = json_decode(file_get_contents("php://input"), true);
+// var_dump($data);
+
+$email = trim($data['email'] ?? '');
+$password = trim($data['password']?? '');
+$sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+$result = mysqli_query($conn, $sql);
+$method = $_SERVER['REQUEST_METHOD'];
+
+if(empty($email) || empty($password)){
+    echo json_encode(["success" => false, "message" => "Email atau password kosong"]);
+} else {
+    if(mysqli_num_rows($result) > 0){
+        echo json_encode(["success" => true, "message" => "Login berhasil"]);
+    } else{
+        echo json_encode(["success" => false, "message" => "Email atau password salah"]);
+    }
+}
+
+$sandi_rahasia = "rahasia009";
+$headers = getallheaders();
+$kunci_pengguna = $headers['X-API_KUNCI'] ?? "";
+
+// function getInput() {
+//     return json_decode(file_get_contents("php://input"), true);
+// }
+
+// if ($kunci_pengguna !== $sandi_rahasia) {
+    //     echo json_encode(["Error" => "Anda tidak berhak masuk"]);
+    //     exit();
+// } else {
+
+//     $method = $_SERVER['REQUEST_METHOD'];
+
+// switch ($method) {
+
+
+//     case 'POST':
+//         // Login User
+//         if (isset($_GET['action']) && $_GET['action'] === 'login') {
+//             $input = getInput();
+//             $email = $conn->real_escape_string($input['email'] ?? '');
+//             $password = $conn->real_escape_string($input['password'] ?? '');
+
+//             if (!$email || !$password) {
+//                 echo json_encode(["error" => "Email dan password wajib diisi"]);
+//                 exit;
+//             }
+
+//             $result = $conn->query("SELECT * FROM users WHERE email = '$email' AND password = '$password' LIMIT 1");
+
+//             if ($result->num_rows > 0) {
+//                 $user = $result->fetch_assoc();
+                
+//                 // Buat token sederhana
+//                 $token = base64_encode(json_encode([
+//                     "id" => $user['id'],
+//                     "email" => $user['email'],
+//                     "time" => time()
+//                 ]));
+
+//                 echo json_encode([
+//                     "message" => "Login berhasil",
+//                     "token" => $token,
+//                     "user" => [
+//                         "id" => $user['id'],
+//                         "nama" => $user['nama'],
+//                         "email" => $user['email']
+//                     ]
+//                 ]);
+//             } else {
+//                 echo json_encode(["error" => "Email atau password salah"]);
+//             }
+//             break;
+//         }   
+//     }
+// }
+?>
