@@ -58,6 +58,8 @@
         >
         <ion-input-password-toggle slot="end"></ion-input-password-toggle>
         </ion-input>
+
+    <ion-input v-model="token" label="Masukkan token Anda" label-placement="floating"></ion-input>
     
         <ion-button expand="block" @click="loginUser" style="margin-top: 20px;">Login</ion-button>
       </ion-card-content>
@@ -81,18 +83,26 @@ import {
   IonButton,
   IonText,
   IonCard,
-  IonCardContent
+  IonCardContent,
+  IonCardHeader
 } from "@ionic/vue";
+import {useRoute} from 'vue-router';
 
 const email = ref("");
 const password = ref("");
+const token = ref("");
 const errorMessage = ref("");
 
 const loginUser = async () => {
+  if(token.value === ""){
+    errorMessage.value = "Token tidak boleh kosong!"
+    return
+  }
   try{
     const res = await axios.post("http://localhost/crudDataIonic/server/login.php", {
       email: email.value,
-      password: password.value
+      password: password.value,
+      token: token.value
     });
     if(res.data.success){
       alert("Login berhasil");

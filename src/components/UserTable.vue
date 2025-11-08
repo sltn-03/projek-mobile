@@ -3,14 +3,15 @@
     <ion-item lines="none">
       <h1 class="title">Data Akun User</h1>
       <ion-buttons slot="end">
-        <ion-button @click="logout" style="background: red; color: white;">Logout</ion-button>
+        <ion-button @click="logout" style="background: red; color: white"
+          >Logout</ion-button
+        >
       </ion-buttons>
     </ion-item>
 
     <div v-if="message" class="message">{{ message }}</div>
 
     <form @submit.prevent="handleSubmit" class="form">
-      
       <input
         v-model="form.nama"
         type="text"
@@ -29,6 +30,13 @@
         v-model="form.password"
         type="text"
         placeholder="Password"
+        class="input"
+        :disabled="loading"
+      />
+      <input
+        v-model="form.token"
+        type="text"
+        placeholder="Token"
         class="input"
         :disabled="loading"
       />
@@ -54,6 +62,7 @@
           <th>Nama</th>
           <th>Email</th>
           <th>Password</th>
+          <th>Token</th>
           <th>Aksi</th>
         </tr>
       </thead>
@@ -66,6 +75,7 @@
           <td>{{ u.nama }}</td>
           <td>{{ u.email }}</td>
           <td>{{ u.password }}</td>
+          <td>{{ u.token }}</td>
           <td>
             <button @click="handleEdit(u)" class="btn-edit" :disabled="loading">
               Edit
@@ -85,24 +95,21 @@
 </template>
 
 <script setup>
-import {
-  IonButtons,
-  IonButton
-} from '@ionic/vue';
+import { IonButtons, IonButton } from "@ionic/vue";
 </script>
 <script>
 import { getUsers, addUser, updateUser, deleteUser } from "../api";
 
 const logout = () => {
   window.location.href = "/login";
-}
+};
 
 export default {
   name: "UserTable",
   data() {
     return {
       users: [],
-      form: { nama: "", email: "", password:"" },
+      form: { nama: "", email: "", password: "", token: "" },
       editId: null,
       loading: false,
       message: "",
@@ -124,8 +131,13 @@ export default {
       }
     },
     async handleSubmit() {
-      if (!this.form.nama || !this.form.email || !this.form.password) {
-        this.message = "Nama, Email, dan Password wajib diisi";
+      if (
+        !this.form.nama ||
+        !this.form.email ||
+        !this.form.password ||
+        !this.form.token
+      ) {
+        this.message = "Nama, Email, Password, dan Token wajib diisi";
         return;
       }
       this.loading = true;
@@ -138,7 +150,7 @@ export default {
           await addUser(this.form);
           this.message = "Data berhasil ditambahkan!";
         }
-        this.form = { nama: "", email: "", password: "" };
+        this.form = { nama: "", email: "", password: "", token: "" };
         this.fetchUsers();
       } catch (error) {
         this.message = "Error: " + error.message;
@@ -161,12 +173,17 @@ export default {
       }
     },
     handleEdit(user) {
-      this.form = { nama: user.nama, email: user.email, password: user.password };
+      this.form = {
+        nama: user.nama,
+        email: user.email,
+        password: user.password,
+        token: user.token,
+      };
       this.editId = user.id;
       this.message = "";
     },
     handleCancel() {
-      this.form = { nama: "", email: "", password: "" };
+      this.form = { nama: "", email: "", password: "", token: "" };
       this.editId = null;
       this.message = "";
     },

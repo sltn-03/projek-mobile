@@ -83,9 +83,10 @@ switch ($method) {
         $name = $conn->real_escape_string($input['nama'] ?? '');
         $email = $conn->real_escape_string($input['email'] ?? '');
         $pw = $conn->real_escape_string($input['password'] ?? '');
+        $token = $conn->real_escape_string($input['token'] ?? '');
         
         if ($name && $email && $pw) {
-            $conn->query("INSERT INTO users (nama, email, password) VALUES ('$name', '$email', '$pw')");
+            $conn->query("INSERT INTO users (nama, email, password, token) VALUES ('$name', '$email', '$pw', '$token')");
             echo json_encode(["message" => "Data berhasil ditambahkan"]);
         } else {
             echo json_encode(["error" => "Nama dan email wajib diisi"]);
@@ -103,8 +104,9 @@ switch ($method) {
             $name = $conn->real_escape_string($input['nama'] ?? '');
             $email = $conn->real_escape_string($input['email'] ?? '');
             $pw = $conn->real_escape_string($input['password'] ?? '');
+            $token = $conn->real_escape_string($input['token'] ?? '');
 
-        $conn->query("UPDATE users SET nama='$name', email='$email', password='$pw' WHERE id=$id");
+        $conn->query("UPDATE users SET nama='$name', email='$email', password='$pw', token='$token' WHERE id=$id");
         echo json_encode(["message" => "Data berhasil diupdate"]);
         break;
 

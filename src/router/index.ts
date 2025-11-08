@@ -13,6 +13,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/components/Login.vue')
   },
   {
+    path: '/token',
+    component: () => import('@/components/Token.vue')
+  },
+  {
     path: '/UserTable',
     component: () => import('@/components/UserTable.vue')
   },
